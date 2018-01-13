@@ -1,0 +1,38 @@
+{% set boss__core__tpl_tags = [] %}
+{% if not boss__core__reset_tags|d(False) %}
+{%   if ansible_local|d() and ansible_local.tags|d() %}
+{%     for element in ansible_local.tags %}
+{%       set _ = boss__core__tpl_tags.append(element) %}
+{%     endfor %}
+{%   elif ansible_local|d() and ansible_local.root|d() and ansible_local.root.flags|d() %}
+{%     for element in ansible_local.root.flags %}
+{%       set _ = boss__core__tpl_tags.append(element) %}
+{%     endfor %}
+{%   endif %}
+{% endif %}
+{% set boss__core__tpl_tags_list = (boss__core__tpl_tags + boss__core__tags|d([]) + boss__core__group_tags|d([]) + boss__core__host_tags|d([])) | difference(boss__core__remove_tags|d([])) %}
+{% if boss__core__static_tags|d() %}
+{%   set boss__core__tpl_tags_list = boss__core__static_tags|d([]) | difference(boss__core__remove_tags|d([])) %}
+{% endif %}
+{
+"flags": {{ boss__core__tpl_tags_list | sort | unique | to_nice_json }},
+{% set boss__core__tpl_uuid = '' %}
+{% if ansible_local|d() and ansible_local.uuid|d() %}
+{%   set boss__core__tpl_uuid = ansible_local.uuid %}
+{% elif ansible_local|d() and ansible_local.root|d() and ansible_local.root.uuid|d() %}
+{%   set boss__core__tpl_uuid = ansible_local.root.uuid %}
+{% else %}
+{%   set boss__core__tpl_uuid = (boss__core__register_uuid.stdout if (boss__core__register_uuid|d() and boss__core__register_uuid.stdout) else boss__core__uuid_random) | lower %}
+{% endif %}
+"uuid": "{{ boss__core__tpl_uuid }}",
+{% for item in boss__core__root_directories %}
+{% if hostvars[inventory_hostname]["ansible_local"]|d() and
+      hostvars[inventory_hostname]["ansible_local"]["root"]|d() and
+      hostvars[inventory_hostname]["ansible_local"]["root"][item.fact]|d() %}
+"{{ item.fact }}": "{{ hostvars[inventory_hostname]["ansible_local"]["root"][item.fact] }}"{% if not loop.last %},{% endif %}
+{% else %}
+"{{ item.fact }}": "{{ item.path }}"{% if not loop.last %},{% endif %}
+{% endif %}
+
+{% endfor %}
+}

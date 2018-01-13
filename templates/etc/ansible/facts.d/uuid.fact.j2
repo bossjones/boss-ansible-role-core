@@ -1,0 +1,9 @@
+{% set boss__core__tpl_uuid = '' %}
+{% if ansible_local|d() and ansible_local.uuid|d() %}
+{%   set boss__core__tpl_uuid = ansible_local.uuid %}
+{% elif ansible_local|d() and ansible_local.root|d() and ansible_local.root.uuid|d() %}
+{%   set boss__core__tpl_uuid = ansible_local.root.uuid %}
+{% else %}
+{%   set boss__core__tpl_uuid = (boss__core__register_uuid.stdout if (boss__core__register_uuid|d() and boss__core__register_uuid.stdout) else boss__core__uuid_random) | lower %}
+{% endif %}
+{{ boss__core__tpl_uuid | to_nice_json }}
