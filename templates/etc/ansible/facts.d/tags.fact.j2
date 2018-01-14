@@ -1,0 +1,17 @@
+{% set boss__core__tpl_tags = [] %}
+{% if not boss__core__reset_tags|d(False) %}
+{%   if ansible_local|d() and ansible_local.tags|d() %}
+{%     for element in ansible_local.tags %}
+{%       set _ = boss__core__tpl_tags.append(element) %}
+{%     endfor %}
+{%   elif ansible_local|d() and ansible_local.root|d() and ansible_local.root.flags|d() %}
+{%     for element in ansible_local.root.flags %}
+{%       set _ = boss__core__tpl_tags.append(element) %}
+{%     endfor %}
+{%   endif %}
+{% endif %}
+{% set boss__core__tpl_tags_list = (boss__core__tpl_tags + boss__core__tags|d([]) + boss__core__group_tags|d([]) + boss__core__host_tags|d([])) | difference(boss__core__remove_tags|d([])) %}
+{% if boss__core__static_tags|d() %}
+{%   set boss__core__tpl_tags_list = boss__core__static_tags|d([]) | difference(boss__core__remove_tags|d([])) %}
+{% endif %}
+{{ boss__core__tpl_tags_list | sort | unique | to_nice_json }}
