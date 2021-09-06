@@ -43,7 +43,10 @@
     group: 'root'
     mode: '0644'
   register: boss__core__register_fact_files
-  with_items: [ 'root', 'tags', 'uuid' ]
+  with_items:
+  - 'root'
+  - 'tags'
+  - 'uuid'
 
 - name: Install core fact script
   template:

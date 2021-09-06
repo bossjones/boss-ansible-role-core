@@ -10,7 +10,7 @@ from grp import getgrall
 {% set boss__core__tpl_facts = {} %}
 {% if not boss__core__reset_facts|d(False) %}
 {%   if ansible_local|d() and ansible_local.core|d() %}
-{%     for key, value in ansible_local.core.iteritems() %}
+{%     for key, value in ansible_local.core.items() %}
 {%       if key not in (boss__core__remove_facts|d([]) + [ 'admin_users' ]) %}
 {%         set _ = boss__core__tpl_facts.update({ key: value }) %}
 {%       endif %}
@@ -18,21 +18,21 @@ from grp import getgrall
 {%   endif %}
 {% endif %}
 {% if boss__core__facts|d() %}
-{%   for key, value in boss__core__facts.iteritems() %}
+{%   for key, value in boss__core__facts.items() %}
 {%     if key not in boss__core__remove_facts|d([]) %}
 {%       set _ = boss__core__tpl_facts.update({ key: value }) %}
 {%     endif %}
 {%   endfor %}
 {% endif %}
 {% if boss__core__group_facts|d() %}
-{%   for key, value in boss__core__group_facts.iteritems() %}
+{%   for key, value in boss__core__group_facts.items() %}
 {%     if key not in boss__core__remove_facts|d([]) %}
 {%       set _ = boss__core__tpl_facts.update({ key: value }) %}
 {%     endif %}
 {%   endfor %}
 {% endif %}
 {% if boss__core__host_facts|d() %}
-{%   for key, value in boss__core__host_facts.iteritems() %}
+{%   for key, value in boss__core__host_facts.items() %}
 {%     if key not in boss__core__remove_facts|d([]) %}
 {%       set _ = boss__core__tpl_facts.update({ key: value }) %}
 {%     endif %}
