@@ -65,6 +65,6 @@
 
 - name: Gather local facts if they changed
   action: setup
-  when: boss__core__register_fact_files|changed or
-        boss__core__register_core_fact|changed or
-        boss__core__register_fact_scripts|changed
+  when: boss__core__register_fact_files is changed or
+        boss__core__register_core_fact is changed or
+        boss__core__register_fact_scripts is changed
