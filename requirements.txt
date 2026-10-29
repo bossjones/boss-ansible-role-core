@@ -1,4 +1,4 @@
-ansible==2.9.25
+ansible==12.2.0
 yolk3k
 docker-py
 molecule
